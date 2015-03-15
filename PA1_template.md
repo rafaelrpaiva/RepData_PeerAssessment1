@@ -75,12 +75,11 @@ ggplot(data = media.intervalos, aes(x = interval, y = steps)) + geom_line() + xl
 
 
 ```r
-media.intervalos[which.max(dados$steps), ]
+media.intervalos[which.max(media.intervalos[,2]),1]
 ```
 
 ```
-##    interval steps
-## NA       NA    NA
+## [1] 835
 ```
 
 Based on the answer (835), and since the pattern for the interval is the hour of the day and then the minutes, we can say that 8:35 A.M. is the hour of day with most steps - which is reasonable to say, since it's when people are going to work.
@@ -143,6 +142,31 @@ median(passos2, na.rm = TRUE)
 ## [1] 10766.19
 ```
 
-We can see that the values aren't many different than the previously adopted.
+We can see that the median is not that different from the previous one, but the average increases since we have more numbers that are fullfilled by some significant number.
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+
+```r
+library(ggplot2)
+dados2$date <- strptime(dados2$date, "%Y-%m-%d")
+dados2$day <- ifelse((weekdays(dados2$date) %in% c("sábado", "domingo")), "weekend", "weekday")
+
+table(dados2$day)
+```
+
+```
+## 
+## weekday weekend 
+##   12960    4608
+```
+
+```r
+averages <- aggregate(steps ~ interval + day, data = dados2, mean)
+p <- ggplot(averages, aes(interval, steps)) + geom_line()
+p <- p + facet_grid(day~.) + xlab("5-minute Intervals") + ylab("Steps")
+print(p)
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-10-1.png) 
+

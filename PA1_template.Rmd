@@ -52,7 +52,7 @@ ggplot(data = media.intervalos, aes(x = interval, y = steps)) + geom_line() + xl
 
 ```{r}
 
-media.intervalos[which.max(dados$steps), ]
+media.intervalos[which.max(media.intervalos[,2]),1]
 
 ```
 
@@ -98,3 +98,18 @@ median(passos2, na.rm = TRUE)
 We can see that the median is not that different from the previous one, but the average increases since we have more numbers that are fullfilled by some significant number.
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+```{r}
+library(ggplot2)
+dados2$date <- strptime(dados2$date, "%Y-%m-%d")
+dados2$day <- ifelse((weekdays(dados2$date) %in% c("sábado", "domingo")), "weekend", "weekday")
+
+table(dados2$day)
+
+averages <- aggregate(steps ~ interval + day, data = dados2, mean)
+p <- ggplot(averages, aes(interval, steps)) + geom_line()
+p <- p + facet_grid(day~.) + xlab("5-minute Intervals") + ylab("Steps")
+print(p)
+
+```
+
